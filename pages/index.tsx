@@ -7,6 +7,7 @@ const Index = () => {
   const [findResult, setFindResult] = useState<ResponseTypes>(new ResponseTypes());
 
   function handleSubmit(e) {
+    setFindResult(new ResponseTypes)
     setLoading(true)
     e.preventDefault();
     const postData = async () => {
@@ -23,18 +24,33 @@ const Index = () => {
     
     postData().then((data) => {
       const result = data.message
-      const serving = result.split('|')[0].split('-')[0].replace(/(\r\n|\n|\r|\t)/gm,"")
-      const cal = result.split('|')[0].split('-')[1].split(':')[1]
-      const fat = result.split('|')[1].split(':')[1]
-      const carb = result.split('|')[2].split(':')[1]
-      const protein = result.split('|')[3].split(':')[1].split('g')[0]+'g'
-      setFindResult({serving, cal,fat,carb,protein})
+      if(result !== ''){
+        const serving = result.split('|')[0].split('-')[0].replace(/(\r\n|\n|\r|\t)/gm,"")
+        const cal = result.split('|')[0].split('-')[1].split(':')[1]
+        const fat = result.split('|')[1].split(':')[1]
+        const carb = result.split('|')[2].split(':')[1]
+        const protein = result.split('|')[3].split(':')[1].split('g')[0]+'g'
+        setFindResult({serving, cal,fat,carb,protein})
+      }
       setLoading(false)
     });
   }
 
+  const sugestion = (query) =>{
+    // fetch(`https://auto.fatsecret.com/?m=9&l=8&query=${query}&fn=autoComplete&callback=autoComplete&_=1675241738810`,{ 
+    //   method: 'GET',
+    //   headers:{
+    //     'Access-Control-Allow-Origin': '*',
+    //     'Access-Control-Allow-Methods':'POST, GET',
+    //   }
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => console.log(data));
+
+  
+  }
   return (
-    <div className = "bg-gray-600 h-screen flex flex-col items-center justify-center">
+    <div className = "h-screen flex flex-col items-center justify-center">
       <div className = " flex items-center justify-center w-36">
           <img className = "object-cover" src = "./images/babi-anjing.png"/>
       </div>
@@ -52,7 +68,7 @@ const Index = () => {
                 className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                 placeholder="Temukan Kalori makanan / minuman" 
                 value={search}
-              onChange={(e) => setSearch(e.target.value)}
+                onChange={async(e) => {await sugestion(e.target.value); await setSearch(e.target.value);}}
               />
               <button 
                 type="submit" 
